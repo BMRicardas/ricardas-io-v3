@@ -1,0 +1,112 @@
+---
+type Props = {
+  words: readonly string[];
+};
+
+const { words } = Astro.props;
+---
+
+<p
+  class="typewriter"
+  data-words={JSON.stringify(words)}
+  aria-label={words.join(", ")}>
+  <span class="typewriter-text"></span>
+  <span class="typewriter-cursor" aria-hidden="true">|</span>
+</p>
+
+<style>
+  .typewriter {
+    font-size: var(--text-base);
+    font-weight: 500;
+    margin-top: 1.25rem;
+    height: 1.5rem;
+    letter-spacing: 0.05em;
+    color: var(--c-accent);
+  }
+
+  .typewriter-cursor {
+    color: var(--c-accent);
+    margin-left: 1px;
+    /* animation: pulse 2s ease-in-out infinite; */
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .typewriter-cursor {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function initTypewriter() {
+    const el = document.querySelector<HTMLParagraphElement>(".typewriter");
+    if (!el) return;
+
+    const textEl = el.querySelector<HTMLSpanElement>(".typewriter-text")!;
+    const words: string[] = JSON.parse(el.dataset.words ?? "[]");
+    if (words.length === 0) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      textEl.textContent = words[0];
+      return;
+    }
+
+    const speed = 80;
+    const pause = 2000;
+    let wordIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function tick() {
+      const current = words[wordIndex % words.length];
+      const isFullyTyped = !deleting && charIndex === current.length;
+      const delay = isFullyTyped ? pause : deleting ? speed / 2 : speed;
+
+      setTimeout(() => {
+        if (isFullyTyped) {
+          deleting = true;
+        } else if (deleting) {
+          if (charIndex === 0) {
+            deleting = false;
+            wordIndex++;
+          } else {
+            charIndex--;
+          }
+        } else {
+          charIndex++;
+        }
+
+        textEl.textContent = words[wordIndex % words.length].slice(
+          0,
+          charIndex,
+        );
+        tick();
+      }, delay);
+    }
+
+    tick();
+  }
+
+  initTypewriter();
+</script>

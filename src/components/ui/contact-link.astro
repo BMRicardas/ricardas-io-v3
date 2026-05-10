@@ -1,0 +1,227 @@
+---
+import Icon from "@/components/ui/icon.astro";
+import type { IconName } from "@/lib/icons";
+
+type Props = {
+  href: string;
+  label: string;
+  icon: IconName;
+  external: boolean;
+  tooltips?: string[];
+  variant?: "icon" | "labeled";
+};
+
+const {
+  href,
+  label,
+  icon,
+  external,
+  tooltips = [],
+  variant = "labeled",
+} = Astro.props;
+
+const isIcon = variant === "icon";
+const target = external ? "_blank" : undefined;
+const rel = external ? "noopener noreferrer" : undefined;
+---
+
+<div
+  class:list={[
+    "contact-link-wrapper",
+    { "contact-link-wrapper--icon": isIcon },
+  ]}>
+  <a
+    href={href}
+    target={target}
+    rel={rel}
+    aria-label={label}
+    class:list={[
+      "contact-link",
+      { "contact-link--icon": isIcon, "contact-link--labeled": !isIcon },
+    ]}
+    style={isIcon
+      ? `anchor-name: --social-link-${label.toLowerCase()}`
+      : undefined}>
+    <Icon name={icon} />
+    {!isIcon && <span>{label}</span>}
+  </a>
+  {
+    isIcon && tooltips.length > 0 && (
+      <span
+        class="contact-link-tooltip"
+        style={`position-anchor: --social-link-${label.toLowerCase()}`}
+        data-tooltips={JSON.stringify(tooltips)}
+      />
+    )
+  }
+</div>
+
+<style>
+  /* ── Shared wrapper ── */
+  .contact-link-wrapper {
+    position: relative;
+  }
+
+  /* ── Icon variant (hero footer) ── */
+  .contact-link--icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    color: var(--c-muted);
+    text-decoration: none;
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+
+    &:hover {
+      color: var(--c-accent);
+      background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+    }
+
+    &:active {
+      background: color-mix(in srgb, var(--c-accent) 15%, transparent);
+    }
+  }
+
+  /* ── Labeled variant (contact section) ── */
+  .contact-link--labeled {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 0.25rem 0.5rem;
+    margin: -0.25rem -0.5rem;
+    font-size: var(--text-base);
+    color: var(--c-muted);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+
+    &:hover {
+      color: var(--c-accent);
+      background: color-mix(in srgb, var(--c-accent) 8%, transparent);
+    }
+  }
+
+  /* ── Tooltip (icon variant only) ── */
+  .contact-link-tooltip {
+    display: none;
+    position: fixed;
+    bottom: anchor(top);
+    margin-block-end: 8px;
+    justify-self: anchor-center;
+    position-try-fallbacks: --align-start, --align-end;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--c-text);
+    background: var(--c-surface);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.35rem 0.6rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    @media (min-width: 1024px) {
+      display: inline-block;
+    }
+  }
+
+  /* ── Tooltip arrow (icon variant only) ── */
+  .contact-link-wrapper--icon .contact-link--icon::after {
+    display: none;
+    content: "";
+    position: absolute;
+    bottom: calc(100% - 2px);
+    left: 50%;
+    translate: -50% 0;
+    border: 5px solid transparent;
+    border-top-color: var(--c-border-subtle);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    @media (min-width: 1024px) {
+      display: inline-block;
+    }
+  }
+
+  .contact-link-wrapper--icon:hover .contact-link--icon::after {
+    opacity: 1;
+  }
+
+  .contact-link-tooltip-visible {
+    opacity: 1;
+  }
+
+  /* ── Anchor position fallbacks ── */
+  @position-try --align-start {
+    justify-self: left;
+    left: anchor(left);
+  }
+
+  @position-try --align-end {
+    justify-self: right;
+    right: anchor(right);
+  }
+
+  /* ── Fallback for browsers without anchor() ── */
+  @supports not (position-anchor: --x) {
+    .contact-link-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      translate: -50% 0;
+    }
+
+    .contact-link-wrapper--icon:first-child .contact-link-tooltip {
+      left: 0;
+      translate: 0 0;
+    }
+
+    .contact-link-wrapper--icon:last-of-type .contact-link-tooltip {
+      left: auto;
+      right: 0;
+      translate: 0 0;
+    }
+  }
+</style>
+
+<script>
+  function initContactLinkTooltips() {
+    const wrappers = document.querySelectorAll<HTMLElement>(
+      ".contact-link-wrapper--icon",
+    );
+
+    wrappers.forEach((wrapper) => {
+      const tooltip = wrapper.querySelector<HTMLElement>(
+        ".contact-link-tooltip",
+      );
+      if (!tooltip) return;
+
+      const phrases: string[] = JSON.parse(tooltip.dataset.tooltips || "[]");
+      if (phrases.length === 0) return;
+
+      delete tooltip.dataset.tooltips;
+
+      wrapper.addEventListener("mouseenter", () => {
+        tooltip.textContent =
+          phrases[Math.floor(Math.random() * phrases.length)];
+        tooltip.classList.add("contact-link-tooltip-visible");
+      });
+
+      wrapper.addEventListener("mouseleave", () => {
+        tooltip.classList.remove("contact-link-tooltip-visible");
+      });
+    });
+  }
+
+  initContactLinkTooltips();
+</script>

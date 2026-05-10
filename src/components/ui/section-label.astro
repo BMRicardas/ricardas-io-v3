@@ -1,0 +1,20 @@
+---
+type Props = {
+  id?: string;
+};
+
+const { id } = Astro.props;
+---
+
+<h2 id={id} class="section-label"><slot /></h2>
+
+<style>
+  .section-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    margin-block-end: var(--space-xl);
+  }
+</style>

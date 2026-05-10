@@ -1,17 +1,50 @@
 ---
-
+import ContactSection from "@/components/sections/contact-section.astro";
+import ExperienceSection from "@/components/experience/experience-section.astro";
+import HeroPanel from "@/components/sections/hero-panel.astro";
+import BaseLayout from "@/layouts/base-layout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <div class="app-shell">
+    <HeroPanel />
+    <main id="main-content" class="main-content">
+      <div class="panel-scroll main-scroll">
+        <div class="content-container">
+          <ExperienceSection />
+          <ContactSection />
+        </div>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .app-shell {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 80rem;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .main-scroll {
+    flex: 1;
+  }
+
+  .content-container {
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+</style>

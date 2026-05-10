@@ -1,0 +1,31 @@
+---
+import type { JSX } from "astro/jsx-runtime";
+import { icons, type IconName } from "@/lib/icons";
+
+type Props = JSX.SVGAttributes & {
+  name: IconName;
+  size?: number;
+};
+
+const { name, size, ...rest } = Astro.props;
+
+const icon = icons[name];
+const resolvedSize = size ?? icon.defaultSize;
+---
+
+<svg
+  class="icon"
+  viewBox={icon.viewBox}
+  width={resolvedSize}
+  height={resolvedSize}
+  aria-hidden="true"
+  fill="currentColor"
+  {...rest}>
+  <path d={icon.path}></path>
+</svg>
+
+<style>
+  .icon {
+    flex-shrink: 0;
+  }
+</style>

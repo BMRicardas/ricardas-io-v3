@@ -1,0 +1,32 @@
+.button {
+  align-self: flex-start;
+  margin-top: 1.5rem;
+  padding: 0.75rem 2rem;
+  width: 100%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.05em;
+  background: var(--c-accent);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  border: 2px solid var(--c-accent);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: transparent;
+    color: var(--c-accent);
+  }
+
+  &:active:not(:disabled) {
+    background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+  }
+
+  @media (min-width: 480px) {
+    width: auto;
+    align-self: flex-end;
+  }
+}

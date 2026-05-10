@@ -1,0 +1,53 @@
+---
+import { config } from "@/config";
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+};
+
+const {
+  title = config.seo.title,
+  description = config.seo.description,
+  canonicalUrl = Astro.url.href,
+  ogImage = "/og-image.png",
+} = Astro.props;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+
+<!-- Structured Data -->
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: config.name.full,
+    url: canonicalUrl,
+    jobTitle: config.roles[0],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: config.location,
+    },
+    sameAs: [config.links.github, config.links.linkedin],
+  })}
+/>

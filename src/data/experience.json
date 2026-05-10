@@ -1,0 +1,50 @@
+[
+  {
+    "id": "decodo",
+    "company": "Decodo",
+    "roles": [
+      {
+        "role": "Frontend Developer",
+        "start": "Oct 2025",
+        "end": "Present",
+        "tech": ["React", "TypeScript", "Redux", "Emotion", "React-Intl"]
+      }
+    ]
+  },
+  {
+    "id": "tglab",
+    "company": "TGLAB",
+    "roles": [
+      {
+        "role": "React Developer",
+        "start": "May 2025",
+        "end": "Oct 2025",
+        "tech": [
+          "React",
+          "TypeScript",
+          "React Hook Form",
+          "styled-components",
+          "Storybook"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tietoevry",
+    "company": "Tietoevry",
+    "roles": [
+      {
+        "role": "Software Engineer",
+        "start": "Jan 2025",
+        "end": "May 2025",
+        "tech": ["Next.js", "TypeScript", "React Hook Form"]
+      },
+      {
+        "role": "Junior Software Developer",
+        "start": "Sep 2022",
+        "end": "Dec 2024",
+        "tech": ["React", "TypeScript"]
+      }
+    ]
+  }
+]

@@ -1,0 +1,75 @@
+---
+import BaseLayout from "@/layouts/base-layout.astro";
+---
+
+<BaseLayout title="Page Not Found — Ričardas Brazdžius">
+  <div class="not-found">
+    <span class="not-found-emoji" aria-hidden="true">¯\_(ツ)_/¯</span>
+    <h1 class="not-found-code">404</h1>
+    <p class="not-found-text">
+      Nothing here. Maybe it moved, maybe it never existed.
+    </p>
+    <a href="/" class="not-found-link">← Take me home</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  .not-found-emoji {
+    font-size: 2rem;
+    color: var(--c-accent);
+    opacity: 0.5;
+    animation: float 3s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .not-found-code {
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--c-border-subtle);
+    line-height: 1;
+  }
+
+  .not-found-text {
+    font-size: var(--text-base);
+    color: var(--c-muted);
+    max-width: 24rem;
+  }
+
+  .not-found-link {
+    margin-top: var(--space-md);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--c-accent);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+</style>

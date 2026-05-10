@@ -1,0 +1,15 @@
+---
+import ConfettiCanvas from "./confetti/confetti-canvas.astro";
+import ShortcutHint from "./shortcut-hint/shortcut-hint.astro";
+import PartyMode from "./party/party-mode.astro";
+---
+
+<ConfettiCanvas />
+<ShortcutHint />
+<PartyMode />
+
+<script>
+  import { initKeyboardShortcuts } from "./keyboard";
+
+  initKeyboardShortcuts();
+</script>

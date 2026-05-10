@@ -1,0 +1,114 @@
+---
+import { formatDuration } from "../../lib/format-duration";
+import type { Experience } from "../../types";
+import ExperienceRoleItem from "./experience-role-item.astro";
+
+type Props = {
+  exp: Experience;
+};
+
+const { exp } = Astro.props;
+
+const isGrouped = exp.roles.length > 1;
+const start = exp.roles.at(-1)?.start || "";
+const end = exp.roles[0].end;
+const duration = formatDuration(start, end);
+const period = `${start} — ${end}`;
+const subtitle = isGrouped
+  ? `${duration} · ${exp.roles.length} roles`
+  : duration;
+---
+
+<div class="experience-card">
+  <div class="meta">
+    <h3 class="company-name">{exp.company}</h3>
+    <p class="meta-date">{period}</p>
+    <p class="meta-date">{subtitle}</p>
+  </div>
+  <ul>
+    {
+      exp.roles.map((role) => (
+        <li class="role-list-item">
+          <ExperienceRoleItem role={role} showPeriod={isGrouped} />
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .experience-card {
+    padding: var(--space-lg) 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    position: relative;
+  }
+
+  .experience-card::before {
+    content: "";
+    position: absolute;
+    top: var(--space-lg);
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--c-accent);
+    display: none;
+  }
+
+  @container experience (min-width: 480px) {
+    .experience-card {
+      grid-template-columns: 140px 1fr;
+      gap: var(--space-xl);
+      padding-left: var(--space-md);
+    }
+
+    .experience-card::before {
+      display: block;
+      left: -3px;
+    }
+  }
+
+  @container experience (min-width: 640px) {
+    .experience-card {
+      grid-template-columns: 160px 1fr;
+    }
+  }
+
+  .meta {
+    & > :first-child {
+      margin-block-end: var(--space-sm);
+    }
+  }
+
+  .company-name {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--c-text);
+    transition: color var(--transition-fast);
+  }
+
+  .meta-date {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--c-muted);
+  }
+
+  .role-list-item {
+    display: block;
+    list-style-type: none;
+
+    &:not(:only-child) {
+      &:not(:first-child) {
+        padding-block-start: 1.25rem;
+      }
+      &:not(:last-child) {
+        padding-block-end: 1.25rem;
+        border-bottom: 1px solid var(--c-border-subtle);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+
+---
+
+<div class="cube-wrapper" aria-hidden="true">
+  <div class="cube-scene">
+    <div class="cube-faces">
+      <div class="cube-face face-front"></div>
+      <div class="cube-face face-back"></div>
+      <div class="cube-face face-left"></div>
+      <div class="cube-face face-right"></div>
+      <div class="cube-face face-top"></div>
+      <div class="cube-face face-bottom"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cube-wrapper {
+    position: relative;
+    width: 7rem;
+    height: 7rem;
+    margin-top: var(--space-lg);
+  }
+
+  .cube-scene {
+    width: 100%;
+    height: 100%;
+    perspective: 400px;
+  }
+
+  .cube-faces {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(-20deg) rotateY(35deg);
+    transition: transform 0.15s ease-out;
+  }
+
+  .cube-face {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    border-radius: 2px;
+    background: var(--c-accent);
+    border: 1px solid var(--c-accent);
+  }
+
+  .face-front {
+    transform: translateZ(30px);
+    opacity: 0.12;
+    backdrop-filter: blur(4px);
+  }
+  .face-back {
+    transform: translateZ(-30px) rotateY(180deg);
+    opacity: 0.08;
+  }
+  .face-left {
+    transform: rotateY(-90deg) translateZ(30px);
+    opacity: 0.1;
+  }
+  .face-right {
+    transform: rotateY(90deg) translateZ(30px);
+    opacity: 0.15;
+  }
+  .face-top {
+    transform: rotateX(90deg) translateZ(30px);
+    opacity: 0.18;
+  }
+  .face-bottom {
+    transform: rotateX(-90deg) translateZ(30px);
+    opacity: 0.06;
+  }
+</style>
+
+<script>
+  function initCube() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const faces = document.querySelector<HTMLDivElement>(".cube-faces");
+    if (!faces) return;
+
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let rafId = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+
+    function animate() {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      const rx = -20 + currentY * -15;
+      const ry = 35 + currentX * 15;
+      faces!.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+      rafId = requestAnimationFrame(animate);
+    }
+
+    // Only run when cube is actually visible
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        document.addEventListener("mousemove", onMouseMove);
+        rafId = requestAnimationFrame(animate);
+      } else {
+        document.removeEventListener("mousemove", onMouseMove);
+        cancelAnimationFrame(rafId);
+      }
+    });
+
+    observer.observe(faces);
+  }
+
+  initCube();
+</script>

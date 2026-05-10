@@ -1,0 +1,78 @@
+---
+import { CONTACT_LINKS } from "@/constants";
+import { ContactForm } from "@/components/islands";
+import ContactLink from "@/components/ui/contact-link.astro";
+import SectionLabel from "../ui/section-label.astro";
+---
+
+<section
+  id="section-contact"
+  aria-labelledby="heading-contact"
+  class="contact-section">
+  <SectionLabel id="heading-contact">Contact</SectionLabel>
+  <p class="contact-title">Say Hi.</p>
+  <div class="contact-container">
+    <div>
+      <p class="contact-paragraph">
+        Have a project in mind or just want to say hi?
+        <br />
+        Let's talk.
+      </p>
+      <div class="contact-link-list">
+        {
+          CONTACT_LINKS.map((link) => (
+            <ContactLink {...link} variant="labeled" />
+          ))
+        }
+      </div>
+    </div>
+    <ContactForm client:visible />
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    margin-block-end: var(--space-4xl);
+    container: contact / inline-size;
+    padding: var(--space-lg) var(--space-md);
+
+    @media (min-width: 640px) {
+      padding: var(--space-xl) var(--space-lg);
+    }
+
+    @media (min-width: 1024px) {
+      padding: var(--space-3xl) var(--space-2xl);
+    }
+  }
+
+  .contact-title {
+    font-size: clamp(1.875rem, 3vw, 2.25rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--c-text);
+    margin-block-end: var(--space-xl);
+  }
+
+  .contact-container {
+    & > * {
+      display: block;
+    }
+
+    & > :first-child {
+      margin-block-end: var(--space-2xl);
+    }
+  }
+
+  .contact-paragraph {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--c-muted);
+    margin-block-end: var(--space-lg);
+  }
+
+  .contact-link-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+</style>

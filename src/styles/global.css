@@ -1,0 +1,219 @@
+/* ── Design tokens ── */
+:root {
+  /* Colors */
+  --c-bg: #f4f5f7;
+  --c-surface: #ffffff;
+  --c-text: #18181b;
+  --c-accent: #001a8a;
+  --c-muted: #4a5568;
+  --c-muted-strong: #2d3748;
+  --c-border: #94a3b8;
+  --c-border-subtle: #c4cdd9;
+  --c-error: #dc2626;
+  --c-warning: #d97706;
+
+  /* Typography */
+  --text-xs: 0.625rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 5rem;
+  --space-4xl: 6rem;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark {
+  --c-bg: #1a1a1b;
+  --c-surface: #232324;
+  --c-text: #f8f9fa;
+  --c-accent: #7ba3ff;
+  --c-muted: #a1a9b5;
+  --c-muted-strong: #c9cdd4;
+  --c-border: #4b5563;
+  --c-border-subtle: #374151;
+  --c-error: #f87171;
+  --c-warning: #fbbf24;
+}
+
+/* ── Reset & base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(
+    --font-sans,
+    "Inter",
+    "Helvetica Neue",
+    "Arial",
+    system-ui,
+    sans-serif
+  );
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overflow: hidden;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      var(--c-accent) 0%,
+      color-mix(in srgb, var(--c-accent) 40%, #e040fb) 50%,
+      var(--c-accent) 100%
+    );
+    z-index: 99999;
+  }
+
+  & * {
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: #fff;
+}
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Skip link ── */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: var(--space-md);
+  z-index: 9999;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 600;
+  background: var(--c-accent);
+  color: #fff;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+
+  &:focus {
+    top: var(--space-md);
+  }
+}
+
+/* ── Scrollbar ── */
+.panel-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border-subtle) transparent;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--c-border-subtle);
+    border-radius: 2px;
+  }
+}
+
+/* ── Autofill ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--c-text);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ── Utilities ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.content-container {
+  container-type: inline-size;
+  container-name: content;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  html * {
+    transition: none !important;
+  }
+
+  .panel-scroll {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Fallback ── */
+@supports not (container-type: inline-size) {
+  html,
+  body {
+    overflow: auto;
+  }
+}

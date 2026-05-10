@@ -1,0 +1,86 @@
+---
+import { formatDuration } from "../../lib/format-duration";
+import type { ExperienceRole } from "../../types";
+
+type Props = {
+  role: ExperienceRole;
+  showPeriod: boolean;
+};
+
+const { role, showPeriod } = Astro.props;
+---
+
+<div class="role">
+  <div class="role-info">
+    <h4 class="role-title">{role.role}</h4>
+    <p class="role-tech">{role.tech.join(" · ")}</p>
+  </div>
+  {
+    showPeriod && (
+      <div class="role-period">
+        <span>
+          {role.start} — {role.end}
+        </span>
+        <span>{formatDuration(role.start, role.end)}</span>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .role {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  @container experience (min-width: 480px) {
+    .role {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+  }
+
+  .role-info {
+    & > * {
+      display: block;
+    }
+    & > :not(:last-child) {
+      margin-block-end: var(--space-xs);
+    }
+  }
+
+  .role-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--c-text);
+    transition: color var(--transition-fast);
+  }
+
+  .role-tech {
+    font-size: var(--text-sm);
+    color: var(--c-muted-strong);
+  }
+
+  .role-period {
+    font-size: var(--text-sm);
+    color: var(--c-muted);
+
+    & > * {
+      display: block;
+    }
+
+    & > :not(:last-child) {
+      margin-block-end: 4px;
+    }
+  }
+
+  @container experience (min-width: 480px) {
+    .role-period {
+      & > * {
+        text-align: end;
+      }
+    }
+  }
+</style>

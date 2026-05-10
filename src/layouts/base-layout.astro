@@ -1,0 +1,63 @@
+---
+import EasterEggs from "@/components/easter-eggs/easter-eggs.astro";
+import SeoHead from "@/components/ui/seo-head.astro";
+import ThemeToggle from "@/components/ui/theme-toggle.astro";
+import { config } from "@/config";
+import "../styles/global.css";
+import { Font } from "astro:assets";
+
+type Props = {
+  title?: string;
+};
+
+const { title = config.seo.title } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <SeoHead title={title} />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/logo192.png" />
+    <meta name="theme-color" content="#1a1a1b" />
+    <Font cssVariable="--font-sans" />
+    {/* Inline theme script — runs before paint to prevent FOUC */}
+    <script is:inline>
+      (() => {
+        const theme = localStorage.getItem("theme") ?? "system";
+        const resolved =
+          theme === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : theme;
+        if (resolved === "dark") document.documentElement.classList.add("dark");
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="theme-toggle-wrapper">
+      <ThemeToggle />
+    </div>
+
+    <slot />
+    <EasterEggs />
+  </body>
+</html>
+<style>
+  .theme-toggle-wrapper {
+    position: fixed;
+    top: var(--space-md);
+    right: max(var(--space-md), calc((100vw - 80rem) / 2 + var(--space-md)));
+    z-index: 9000;
+
+    @media (min-width: 1024px) {
+      top: var(--space-lg);
+      right: max(var(--space-lg), calc((100vw - 80rem) / 2 + var(--space-lg)));
+    }
+  }
+</style>

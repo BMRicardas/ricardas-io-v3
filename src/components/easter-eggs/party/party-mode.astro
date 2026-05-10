@@ -1,0 +1,18 @@
+---
+// Party mode styles
+---
+
+<style is:global>
+  .party-mode {
+    animation: party-bg 2s linear infinite;
+  }
+
+  @keyframes party-bg {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+</style>
