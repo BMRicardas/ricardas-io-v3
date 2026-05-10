@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 
@@ -14,4 +14,12 @@ export default defineConfig({
       cssVariable: "--font-sans",
     },
   ],
+  env: {
+    schema: {
+      PUBLIC_FORMSPREE_URL: envField.string({
+        context: "client",
+        access: "public",
+      }),
+    },
+  },
 });

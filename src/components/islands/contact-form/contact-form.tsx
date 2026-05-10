@@ -9,6 +9,7 @@ import { Textarea } from "../textarea";
 import { SubmitButton } from "../submit-button";
 import { FormMessage } from "../form-message";
 import { ErrorBoundary } from "./error-boundary";
+import { PUBLIC_FORMSPREE_URL } from "astro:env/client";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name should be at least 2 characters"),
@@ -64,7 +65,7 @@ export function ContactForm() {
     clearErrors("root");
 
     try {
-      const response = await fetch("https://formspree.io/f/meenpoeb", {
+      const response = await fetch(PUBLIC_FORMSPREE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
