@@ -40,9 +40,7 @@ const experiences = await getCollection("experience");
     }
   }
 
-  .experience-list-item {
-    &:not(:last-child) {
-      border-block-end: 1px solid var(--c-border-subtle);
-    }
+  .experience-list-item:not(:last-child) {
+    border-block-end: 1px solid var(--c-border-subtle);
   }
 </style>

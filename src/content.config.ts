@@ -24,6 +24,7 @@ const experienceSchema = z
       ...role,
       duration: formatDuration(role.start, role.end),
       period: `${role.start} — ${role.end}`,
+      isCurrent: role.end === "Present",
     }));
 
     const newest = enrichedRoles[0];
@@ -32,6 +33,7 @@ const experienceSchema = z
     const totalDuration = formatDuration(oldest.start, newest.end);
     const period = `${oldest.start} — ${newest.end}`;
     const isGrouped = enrichedRoles.length > 1;
+    const isCurrent = newest.isCurrent;
     const subtitle = isGrouped
       ? `${totalDuration} · ${enrichedRoles.length} roles`
       : totalDuration;
@@ -42,6 +44,7 @@ const experienceSchema = z
       totalDuration,
       period,
       isGrouped,
+      isCurrent,
       subtitle,
     };
   });

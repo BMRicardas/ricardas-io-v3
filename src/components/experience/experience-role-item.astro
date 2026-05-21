@@ -10,10 +10,7 @@ const { role, showPeriod } = Astro.props;
 ---
 
 <div class="role">
-  <div class="role-info">
-    <h4 class="role-title">{role.role}</h4>
-    <p class="role-tech">{role.tech.join(" · ")}</p>
-  </div>
+  <h4 class="role-title">{role.role}</h4>
   {
     showPeriod && (
       <div class="role-period">
@@ -39,25 +36,11 @@ const { role, showPeriod } = Astro.props;
     }
   }
 
-  .role-info {
-    & > * {
-      display: block;
-    }
-    & > :not(:last-child) {
-      margin-block-end: var(--space-xs);
-    }
-  }
-
   .role-title {
     font-size: var(--text-base);
-    font-weight: 600;
+    font-weight: 500;
     color: var(--c-text);
     transition: color var(--transition-fast);
-  }
-
-  .role-tech {
-    font-size: var(--text-sm);
-    color: var(--c-muted-strong);
   }
 
   .role-period {

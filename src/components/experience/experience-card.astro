@@ -9,7 +9,7 @@ type Props = {
 const { exp } = Astro.props;
 ---
 
-<div class="experience-card">
+<article class="experience-card" data-current={exp.isCurrent}>
   <div class="meta">
     <h3 class="company-name">{exp.company}</h3>
     <p class="meta-date">{exp.period}</p>
@@ -24,7 +24,7 @@ const { exp } = Astro.props;
       ))
     }
   </ul>
-</div>
+</article>
 
 <style>
   .experience-card {
@@ -38,15 +38,53 @@ const { exp } = Astro.props;
   .experience-card::before {
     content: "";
     position: absolute;
-    top: calc(var(--space-lg) + calc((var(--text-base) / 2) - 0.025em));
+    top: calc(var(--space-lg) + calc((var(--text-base) / 2) - 0.2rem));
     left: 0;
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background: var(--c-border);
+    display: none;
+    box-shadow: 0 0 0 3px var(--c-bg);
+    transform: translateX(calc(-50% - 0.5px));
+    z-index: 1;
+  }
+
+  .experience-card[data-current="true"]::before {
+    background: var(--c-accent);
+  }
+
+  .experience-card[data-current="true"]::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--space-lg) + calc((var(--text-base) / 2) - 0.2rem));
+    left: 0;
+    width: 7px;
+    height: 7px;
     border-radius: var(--radius-full);
     background: var(--c-accent);
     display: none;
-    box-shadow: 0 0 0 3px var(--c-bg);
-    transform: translateX(-50%);
+    transform: translateX(calc(-50%));
+    animation: dot-pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    pointer-events: none;
+  }
+
+  @keyframes dot-pulse {
+    0% {
+      opacity: 0.7;
+      transform: translateX(-50%) scale(1);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) scale(3);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experience-card[data-current="true"]::after {
+      animation: none;
+    }
   }
 
   @container experience (min-width: 470px) {
@@ -55,8 +93,8 @@ const { exp } = Astro.props;
       gap: var(--space-xl);
       padding-left: var(--space-md);
     }
-
-    .experience-card::before {
+    .experience-card::before,
+    .experience-card[data-current="true"]::after {
       display: block;
     }
   }
@@ -67,42 +105,39 @@ const { exp } = Astro.props;
     }
   }
 
-  .meta {
-    & > :first-child {
-      margin-block-end: var(--space-sm);
-    }
+  .meta > :first-child {
+    margin-block-end: var(--space-sm);
   }
 
   .company-name {
-    display: block;
     font-size: var(--text-base);
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--c-text);
-    transition: color var(--transition-fast);
+    line-height: 1.2;
+  }
+
+  .experience-card[data-current="true"] .company-name {
+    color: var(--c-accent);
   }
 
   .meta-date {
-    display: block;
     font-size: var(--text-sm);
     color: var(--c-muted);
+    line-height: 1.5;
   }
 
   .role-list {
     list-style-type: none;
   }
 
-  .role-list-item {
-    display: block;
-
-    &:not(:only-child) {
-      &:not(:first-child) {
-        padding-block-start: 1.25rem;
-      }
-      &:not(:last-child) {
-        padding-block-end: 1.25rem;
-        border-bottom: 1px solid var(--c-border-subtle);
-      }
+  .role-list-item:not(:only-child) {
+    &:not(:first-child) {
+      padding-block-start: 1.25rem;
+    }
+    &:not(:last-child) {
+      padding-block-end: 1.25rem;
+      border-bottom: 1px solid var(--c-border-subtle);
     }
   }
 </style>
