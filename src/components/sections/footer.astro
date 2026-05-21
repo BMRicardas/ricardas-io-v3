@@ -1,0 +1,58 @@
+---
+import { config } from "@/config";
+
+const year = new Date().getFullYear();
+const repoUrl = "https://github.com/BMRicardas/ricardas-io-v3";
+---
+
+<footer class="site-footer">
+  <p class="footer-line">
+    © {year}
+    {config.name.full} · Crafted in {config.location.split(",")[0]}
+  </p>
+  <p class="footer-line footer-meta">
+    Built with <a
+      href="https://astro.build"
+      target="_blank"
+      rel="noopener noreferrer">Astro</a
+    >
+    ·
+    <a href={repoUrl} target="_blank" rel="noopener noreferrer">View source</a>
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    padding: var(--space-lg) var(--space-md);
+    border-top: 1px solid var(--c-border-subtle);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+
+    @media (min-width: 1024px) {
+      padding: var(--space-lg) var(--space-xl);
+    }
+  }
+
+  .footer-line {
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    color: var(--c-muted);
+    line-height: 1.6;
+  }
+
+  .footer-meta a {
+    color: var(--c-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .footer-meta a:hover {
+    color: var(--c-accent);
+    border-bottom-color: var(--c-accent);
+  }
+</style>

@@ -6,11 +6,12 @@ type Props = {
 const { words } = Astro.props;
 ---
 
-<p
-  class="typewriter"
-  data-words={JSON.stringify(words)}
-  aria-label={words.join(", ")}>
-  <span class="typewriter-text" aria-hidden="true"></span>
+<p class="typewriter">
+  <span class="sr-only">{words.join(", ")}</span>
+  <span
+    class="typewriter-text"
+    data-words={JSON.stringify(words)}
+    aria-hidden="true"></span>
   <span class="typewriter-cursor" aria-hidden="true">|</span>
 </p>
 
@@ -26,8 +27,6 @@ const { words } = Astro.props;
 
   .typewriter-cursor {
     color: var(--c-accent);
-    margin-left: 1px;
-    /* animation: pulse 2s ease-in-out infinite; */
     animation: blink 1s step-end infinite;
   }
 
@@ -64,7 +63,7 @@ const { words } = Astro.props;
     if (!el) return;
 
     const textEl = el.querySelector<HTMLSpanElement>(".typewriter-text")!;
-    const words: string[] = JSON.parse(el.dataset.words ?? "[]");
+    const words: string[] = JSON.parse(textEl.dataset.words ?? "[]");
     if (words.length === 0) return;
 
     const prefersReducedMotion = window.matchMedia(
