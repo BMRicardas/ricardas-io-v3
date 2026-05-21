@@ -23,15 +23,6 @@
 
 <style>
   .shortcut-hint-anchor {
-    position: fixed;
-    bottom: var(--space-lg);
-    right: var(--space-lg);
-    z-index: 9500;
-
-    @media (max-width: 1023px) {
-      display: none;
-    }
-
     &:hover .shortcut-hint-trigger {
       color: var(--c-text);
       border-color: var(--c-border);
@@ -48,8 +39,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: var(--radius-full);
     border: 1px solid var(--c-border-subtle);
     background: var(--c-surface);

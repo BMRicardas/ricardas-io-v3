@@ -1,5 +1,4 @@
 ---
-import { formatDuration } from "../../lib/format-duration";
 import type { Experience } from "../../types";
 import ExperienceRoleItem from "./experience-role-item.astro";
 
@@ -8,28 +7,19 @@ type Props = {
 };
 
 const { exp } = Astro.props;
-
-const isGrouped = exp.roles.length > 1;
-const start = exp.roles.at(-1)?.start || "";
-const end = exp.roles[0].end;
-const duration = formatDuration(start, end);
-const period = `${start} — ${end}`;
-const subtitle = isGrouped
-  ? `${duration} · ${exp.roles.length} roles`
-  : duration;
 ---
 
 <div class="experience-card">
   <div class="meta">
     <h3 class="company-name">{exp.company}</h3>
-    <p class="meta-date">{period}</p>
-    <p class="meta-date">{subtitle}</p>
+    <p class="meta-date">{exp.period}</p>
+    <p class="meta-date">{exp.subtitle}</p>
   </div>
-  <ul>
+  <ul class="role-list" role="list">
     {
       exp.roles.map((role) => (
         <li class="role-list-item">
-          <ExperienceRoleItem role={role} showPeriod={isGrouped} />
+          <ExperienceRoleItem role={role} showPeriod={exp.isGrouped} />
         </li>
       ))
     }
@@ -48,16 +38,18 @@ const subtitle = isGrouped
   .experience-card::before {
     content: "";
     position: absolute;
-    top: var(--space-lg);
+    top: calc(var(--space-lg) + calc((var(--text-base) / 2) - 0.025em));
     left: 0;
     width: 6px;
     height: 6px;
     border-radius: var(--radius-full);
     background: var(--c-accent);
     display: none;
+    box-shadow: 0 0 0 3px var(--c-bg);
+    transform: translateX(-50%);
   }
 
-  @container experience (min-width: 480px) {
+  @container experience (min-width: 470px) {
     .experience-card {
       grid-template-columns: 140px 1fr;
       gap: var(--space-xl);
@@ -66,7 +58,6 @@ const subtitle = isGrouped
 
     .experience-card::before {
       display: block;
-      left: -3px;
     }
   }
 
@@ -97,9 +88,12 @@ const subtitle = isGrouped
     color: var(--c-muted);
   }
 
+  .role-list {
+    list-style-type: none;
+  }
+
   .role-list-item {
     display: block;
-    list-style-type: none;
 
     &:not(:only-child) {
       &:not(:first-child) {

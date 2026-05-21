@@ -10,7 +10,7 @@ const { words } = Astro.props;
   class="typewriter"
   data-words={JSON.stringify(words)}
   aria-label={words.join(", ")}>
-  <span class="typewriter-text"></span>
+  <span class="typewriter-text" aria-hidden="true"></span>
   <span class="typewriter-cursor" aria-hidden="true">|</span>
 </p>
 
@@ -19,7 +19,7 @@ const { words } = Astro.props;
     font-size: var(--text-base);
     font-weight: 500;
     margin-top: 1.25rem;
-    height: 1.5rem;
+    min-height: 1.5rem;
     letter-spacing: 0.05em;
     color: var(--c-accent);
   }
@@ -67,23 +67,44 @@ const { words } = Astro.props;
     const words: string[] = JSON.parse(el.dataset.words ?? "[]");
     if (words.length === 0) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    if (prefersReducedMotion.matches) {
       textEl.textContent = words[0];
       return;
     }
 
-    const speed = 80;
-    const pause = 2000;
+    const TYPE_SPEED = 80;
+    const DELETE_SPEED = 40;
+    const PAUSE_AFTER_WORD = 2000;
+
     let wordIndex = 0;
     let charIndex = 0;
     let deleting = false;
+    let timeoutId: number | null = null;
+    let isPaused = document.hidden;
+
+    function clearScheduled() {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    }
 
     function tick() {
+      if (isPaused) return;
+
       const current = words[wordIndex % words.length];
       const isFullyTyped = !deleting && charIndex === current.length;
-      const delay = isFullyTyped ? pause : deleting ? speed / 2 : speed;
+      const delay = isFullyTyped
+        ? PAUSE_AFTER_WORD
+        : deleting
+          ? DELETE_SPEED
+          : TYPE_SPEED;
 
-      setTimeout(() => {
+      timeoutId = window.setTimeout(() => {
         if (isFullyTyped) {
           deleting = true;
         } else if (deleting) {
@@ -104,6 +125,26 @@ const { words } = Astro.props;
         tick();
       }, delay);
     }
+
+    // Pause when tab is backgrounded; resume when visible
+    document.addEventListener("visibilitychange", () => {
+      isPaused = document.hidden;
+      if (isPaused) {
+        clearScheduled();
+      } else {
+        tick();
+      }
+    });
+
+    // Respect runtime reduced-motion changes
+    prefersReducedMotion.addEventListener("change", (e) => {
+      if (e.matches) {
+        clearScheduled();
+        textEl.textContent = words[0];
+      } else {
+        tick();
+      }
+    });
 
     tick();
   }

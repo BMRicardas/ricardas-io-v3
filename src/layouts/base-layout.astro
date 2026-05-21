@@ -1,7 +1,6 @@
 ---
 import EasterEggs from "@/components/easter-eggs/easter-eggs.astro";
 import SeoHead from "@/components/ui/seo-head.astro";
-import ThemeToggle from "@/components/ui/theme-toggle.astro";
 import { config } from "@/config";
 import "../styles/global.css";
 import { Font } from "astro:assets";
@@ -21,11 +20,20 @@ const { title = config.seo.title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" sizes="192x192" href="/logo192.png" />
-    <meta name="theme-color" content="#1a1a1b" />
+    <meta
+      name="theme-color"
+      content="#f4f5f7"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1a1a1b"
+      media="(prefers-color-scheme: dark)"
+    />
     <Font cssVariable="--font-sans" />
     {/* Inline theme script — runs before paint to prevent FOUC */}
     <script is:inline>
-      (() => {
+      function themeInit() {
         const theme = localStorage.getItem("theme") ?? "system";
         const resolved =
           theme === "system"
@@ -34,30 +42,14 @@ const { title = config.seo.title } = Astro.props;
               : "light"
             : theme;
         if (resolved === "dark") document.documentElement.classList.add("dark");
-      })();
+      }
+
+      themeInit();
     </script>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-
-    <div class="theme-toggle-wrapper">
-      <ThemeToggle />
-    </div>
-
     <slot />
     <EasterEggs />
   </body>
 </html>
-<style>
-  .theme-toggle-wrapper {
-    position: fixed;
-    top: var(--space-md);
-    right: max(var(--space-md), calc((100vw - 80rem) / 2 + var(--space-md)));
-    z-index: 9000;
-
-    @media (min-width: 1024px) {
-      top: var(--space-lg);
-      right: max(var(--space-lg), calc((100vw - 80rem) / 2 + var(--space-lg)));
-    }
-  }
-</style>

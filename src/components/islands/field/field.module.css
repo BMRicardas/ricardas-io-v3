@@ -16,7 +16,8 @@
 
   &:focus-within > .label,
   &:has(input:not(:placeholder-shown)) > .label,
-  &:has(textarea:not(:placeholder-shown)) > .label {
+  &:has(textarea:not(:placeholder-shown)) > .label,
+  &:has(input:autofill) > .label {
     transform: translateY(-100%);
     font-size: 0.7rem;
     color: var(--c-accent);

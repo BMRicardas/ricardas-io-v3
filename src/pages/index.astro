@@ -1,13 +1,18 @@
 ---
 import ContactSection from "@/components/sections/contact-section.astro";
 import ExperienceSection from "@/components/experience/experience-section.astro";
-import HeroPanel from "@/components/sections/hero-panel.astro";
+import HeroSection from "@/components/sections/hero-section.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
+import ThemeToggle from "@/components/ui/theme-toggle.astro";
+import ShortcutHint from "@/components/easter-eggs/shortcut-hint/shortcut-hint.astro";
 ---
 
 <BaseLayout>
   <div class="app-shell">
-    <HeroPanel />
+    <div class="theme-toggle-wrapper">
+      <ThemeToggle />
+    </div>
+    <HeroSection />
     <main id="main-content" class="main-content">
       <div class="panel-scroll main-scroll">
         <div class="content-container">
@@ -16,20 +21,25 @@ import BaseLayout from "@/layouts/base-layout.astro";
         </div>
       </div>
     </main>
+
+    <div class="shortcut-hint-wrapper">
+      <ShortcutHint />
+    </div>
   </div>
 </BaseLayout>
 
 <style>
   .app-shell {
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    position: relative;
     margin: 0 auto;
     max-width: 80rem;
+    display: flex;
+    flex-direction: column;
 
     @media (min-width: 1024px) {
       flex-direction: row;
+      height: 100dvh;
+      overflow: hidden;
     }
   }
 
@@ -46,5 +56,29 @@ import BaseLayout from "@/layouts/base-layout.astro";
   .content-container {
     max-width: 56rem;
     margin: 0 auto;
+  }
+
+  .theme-toggle-wrapper {
+    position: fixed;
+    inset-block-start: var(--space-lg);
+    inset-inline-end: max(
+      var(--space-md),
+      calc((100dvw - 80rem) / 2 + var(--space-md))
+    );
+    z-index: 9000;
+  }
+
+  .shortcut-hint-wrapper {
+    position: fixed;
+    inset-block-end: var(--space-lg);
+    inset-inline-end: max(
+      var(--space-md),
+      calc((100dvw - 80rem) / 2 + var(--space-md))
+    );
+    z-index: 9500;
+
+    @media (max-width: 1024px) {
+      display: none;
+    }
   }
 </style>

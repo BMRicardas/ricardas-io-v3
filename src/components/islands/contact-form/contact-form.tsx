@@ -28,7 +28,6 @@ function ariaProps(
   return {
     "aria-describedby": error ? `${fieldId}-err` : undefined,
     "aria-invalid": !!error || undefined,
-    "aria-label": `${fieldName} input`,
   };
 }
 
@@ -119,7 +118,7 @@ export function ContactForm() {
           <FieldLabel htmlFor={nameId}>Your name</FieldLabel>
           <Input
             id={nameId}
-            placeholder="Your name"
+            placeholder=" "
             autoComplete="name"
             {...ariaProps("name", nameId, errors)}
             {...register("name")}
@@ -131,7 +130,7 @@ export function ContactForm() {
           <Input
             id={emailId}
             type="email"
-            placeholder="your@email.com"
+            placeholder=" "
             autoComplete="email"
             {...ariaProps("email", emailId, errors)}
             {...register("email")}
@@ -142,7 +141,7 @@ export function ContactForm() {
           <FieldLabel htmlFor={messageId}>Your message</FieldLabel>
           <Textarea
             id={messageId}
-            placeholder="Tell me about your project..."
+            placeholder=" "
             length={messageLength}
             maxLength={MAX_MESSAGE_LENGTH}
             rows={3}

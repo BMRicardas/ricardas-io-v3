@@ -27,8 +27,7 @@ function parseMonthYear(str: string): Date {
 
 export function formatDuration(startStr: string, endStr: string): string {
   const start = parseMonthYear(startStr);
-  const end =
-    endStr.toLowerCase() === "present" ? new Date() : parseMonthYear(endStr);
+  const end = endStr === "Present" ? new Date() : parseMonthYear(endStr);
 
   // Include the end month as a full month
   const months =

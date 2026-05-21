@@ -11,7 +11,7 @@ type Props = ComponentProps<"button"> & {
 export function SubmitButton({
   isSubmitting,
   disabled,
-  label = "Send my message",
+  label = "Send message",
   loadingLabel = "Sending…",
   ...rest
 }: Props) {

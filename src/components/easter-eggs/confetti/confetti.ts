@@ -37,6 +37,8 @@ function getCanvas() {
 }
 
 export function launchConfetti() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
   const { canvas, ctx } = getCanvas();
   if (!canvas || !ctx) return;
 

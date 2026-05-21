@@ -22,9 +22,9 @@ const nameSegments = [
 ] satisfies NameSegments[];
 ---
 
-<aside aria-label="Profile" class="hero-panel">
-  <div>
-    <h1 class="hero-name" id="hero-name">
+<section aria-label="Profile" class="hero-panel">
+  <header>
+    <h1 class="hero-name" id="hero-name" aria-labelledby="hero-name">
       {
         nameSegments.map((seg, si) => (
           <>
@@ -47,33 +47,36 @@ const nameSegments = [
     <div class="hero-cube">
       <IsometricCube />
     </div>
-  </div>
+  </header>
   <div class="hero-footer">
-    {CONTACT_LINKS.map((link) => <ContactLink {...link} variant="icon" />)}
+    <ul class="hero-contact-link-list">
+      {
+        CONTACT_LINKS.map((link) => (
+          <li>
+            <ContactLink {...link} variant="icon" />
+          </li>
+        ))
+      }
+    </ul>
     <span class="hero-location">
       <Icon name="location" />
       {config.location}
     </span>
   </div>
-</aside>
+</section>
 
 <style>
-  /* ── Panel layout ── */
   .hero-panel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     flex-shrink: 0;
     width: 100%;
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md);
     border-bottom: 1px solid var(--c-border-subtle);
 
-    @media (min-width: 640px) {
-      padding: var(--space-md);
-    }
-
     @media (min-width: 1024px) {
-      width: 420px;
+      width: 26rem;
       height: 100%;
       padding-block: var(--space-lg);
       border-bottom: none;
@@ -81,10 +84,9 @@ const nameSegments = [
     }
   }
 
-  /* ── Name ── */
   .hero-name {
     position: relative;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
     font-weight: 900;
     letter-spacing: -0.05em;
     line-height: 0.9;
@@ -105,17 +107,17 @@ const nameSegments = [
     animation: char-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  /* ── Bio & cube (desktop only) ── */
   .hero-bio {
-    display: none;
+    display: block;
     font-size: var(--text-base);
     line-height: 1.6;
     margin-top: var(--space-lg);
-    max-width: 20rem;
+    max-width: 100%;
     color: var(--c-muted);
+    text-wrap: pretty;
 
-    @media (min-width: 1024px) {
-      display: block;
+    @media (min-width: 640px) {
+      max-width: 75%;
     }
   }
 
@@ -127,12 +129,21 @@ const nameSegments = [
     }
   }
 
-  /* ── Footer ── */
   .hero-footer {
     display: flex;
     align-items: center;
     gap: var(--space-md);
     margin-top: var(--space-md);
+  }
+
+  .hero-contact-link-list {
+    display: flex;
+    gap: var(--space-xs);
+    list-style: none;
+
+    @media (min-width: 640px) {
+      gap: var(--space-md);
+    }
   }
 
   .hero-location {
@@ -144,7 +155,6 @@ const nameSegments = [
     color: var(--c-muted);
   }
 
-  /* ── Animation ── */
   @keyframes char-in {
     0% {
       opacity: 0;

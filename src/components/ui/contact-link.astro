@@ -173,7 +173,7 @@ const rel = external ? "noopener noreferrer" : undefined;
   }
 
   /* ── Fallback for browsers without anchor() ── */
-  @supports not (position-anchor: --x) {
+  @supports not (anchor-name: --x) {
     .contact-link-tooltip {
       position: absolute;
       bottom: calc(100% + 8px);

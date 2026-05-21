@@ -1,5 +1,4 @@
 ---
-import { formatDuration } from "../../lib/format-duration";
 import type { ExperienceRole } from "../../types";
 
 type Props = {
@@ -18,10 +17,8 @@ const { role, showPeriod } = Astro.props;
   {
     showPeriod && (
       <div class="role-period">
-        <span>
-          {role.start} — {role.end}
-        </span>
-        <span>{formatDuration(role.start, role.end)}</span>
+        <span>{role.period}</span>
+        <span>{role.duration}</span>
       </div>
     )
   }

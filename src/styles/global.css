@@ -65,21 +65,30 @@
   padding: 0;
 }
 
+html,
+body {
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  html,
+  body {
+    overflow: hidden;
+  }
+}
+
 html {
   background-color: var(--c-bg);
   color: var(--c-text);
   font-family: var(
     --font-sans,
+    "Inter Fallback",
     "Inter",
-    "Helvetica Neue",
-    "Arial",
     system-ui,
     sans-serif
   );
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  overflow: hidden;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
@@ -106,11 +115,6 @@ html {
       color 0.3s ease,
       border-color 0.3s ease;
   }
-}
-
-body {
-  height: 100%;
-  overflow: hidden;
 }
 
 ::selection {
@@ -216,4 +220,11 @@ select:-webkit-autofill:focus {
   body {
     overflow: auto;
   }
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  size-adjust: 107%;
+  ascent-override: 90%;
+  src: local("Arial");
 }

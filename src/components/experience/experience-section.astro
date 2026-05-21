@@ -11,7 +11,7 @@ const experiences = await getCollection("experience");
   aria-labelledby="heading-experience"
   class="experience-section">
   <SectionLabel id="heading-experience">Experience</SectionLabel>
-  <ul class="experience-list">
+  <ul class="experience-list" role="list">
     {
       experiences.map(({ data: exp }) => (
         <li class="experience-list-item">
@@ -27,23 +27,22 @@ const experiences = await getCollection("experience");
     container: experience / inline-size;
     padding: var(--space-lg) var(--space-md);
 
-    @media (min-width: 640px) {
-      padding: var(--space-xl) var(--space-lg);
-    }
-
     @media (min-width: 1024px) {
-      padding: var(--space-3xl) var(--space-2xl);
+      padding: var(--space-xl);
     }
   }
 
   .experience-list {
-    @container experience (min-width: 480px) {
+    list-style: none;
+
+    @container experience (min-width: 470px) {
       border-left: 1px solid var(--c-border-subtle);
     }
   }
 
   .experience-list-item {
-    list-style-type: none;
-    border-block-end: 1px solid var(--c-border-subtle);
+    &:not(:last-child) {
+      border-block-end: 1px solid var(--c-border-subtle);
+    }
   }
 </style>

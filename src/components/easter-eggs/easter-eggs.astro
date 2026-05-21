@@ -1,15 +1,50 @@
 ---
 import ConfettiCanvas from "./confetti/confetti-canvas.astro";
-import ShortcutHint from "./shortcut-hint/shortcut-hint.astro";
 import PartyMode from "./party/party-mode.astro";
 ---
 
 <ConfettiCanvas />
-<ShortcutHint />
 <PartyMode />
 
 <script>
-  import { initKeyboardShortcuts } from "./keyboard";
+  import { getMode, setMode } from "./state";
 
-  initKeyboardShortcuts();
+  function initKeyboardShortcuts() {
+    document.addEventListener("keydown", async (e) => {
+      // Ignore when typing in inputs
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+
+      if (e.key.toLowerCase() === "p") {
+        const { triggerParty } = await import("./party/party");
+        triggerParty();
+      }
+
+      if (e.key.toLowerCase() === "r") {
+        const { stopPartyMode } = await import("./party/party");
+        if (getMode() === "party") {
+          stopPartyMode();
+          setMode("none");
+        }
+      }
+    });
+  }
+
+  let loaded = false;
+  document.addEventListener(
+    "keydown",
+    async (e) => {
+      if (loaded) return;
+      if (["p", "r"].includes(e.key.toLowerCase())) {
+        loaded = true;
+
+        initKeyboardShortcuts();
+        // re-dispatch so this keystroke isn't lost
+        document.dispatchEvent(new KeyboardEvent("keydown", e));
+      }
+    },
+    { once: false },
+  );
 </script>

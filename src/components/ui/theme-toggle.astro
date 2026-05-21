@@ -26,28 +26,32 @@ const themes = [
 ] satisfies Theme[];
 ---
 
-<fieldset class="theme-toggle" aria-label="Color theme" title="Theme change">
+<fieldset class="theme-toggle" title="Theme change">
   <legend class="sr-only">Color theme</legend>
   {
     themes.map(({ id, label, d }) => (
-      <button
-        type="button"
-        data-theme={id}
-        aria-label={label}
-        aria-pressed="false"
-        title={`${label} theme`}>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d={d} />
-        </svg>
-      </button>
+      <label class="theme-option" title={`${label} theme`}>
+        <input
+          type="radio"
+          name="theme"
+          value={id}
+          class="theme-radio sr-only"
+          aria-label={label}
+        />
+        <span class="theme-option-visual" aria-hidden="true">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d={d} />
+          </svg>
+        </span>
+      </label>
     ))
   }
 </fieldset>
@@ -56,70 +60,79 @@ const themes = [
   .theme-toggle {
     display: flex;
     align-items: center;
-    flex-direction: column;
     gap: 2px;
     background-color: var(--c-surface);
     border: 1px solid var(--c-border-subtle);
     border-radius: var(--radius-full);
     padding: var(--radius-sm);
 
-    @media (min-width: 400px) {
-      flex-direction: row;
-    }
+    margin: 0;
+    border-width: 1px;
+  }
 
-    & button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: var(--radius-full);
-      background: transparent;
-      color: var(--c-muted);
-      cursor: pointer;
-      transition:
-        background var(--transition-fast),
-        color var(--transition-fast);
+  .theme-option {
+    display: inline-flex;
+    cursor: pointer;
+  }
 
-      &[aria-pressed="true"] {
-        background: var(--c-border-subtle);
-        color: var(--c-text);
-      }
-    }
+  .theme-option-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--c-muted);
+    transition:
+      background var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .theme-option:hover .theme-option-visual {
+    color: var(--c-text);
+  }
+
+  .theme-radio:checked + .theme-option-visual {
+    background: var(--c-border-subtle);
+    color: var(--c-text);
+  }
+
+  .theme-radio:focus-visible + .theme-option-visual {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
   }
 </style>
 
 <script>
   import { applyTheme } from "@/lib/change-theme";
+  import { getStoredTheme, type ThemeId } from "@/lib/theme";
 
   function initThemeToggle() {
     const fieldset =
       document.querySelector<HTMLFieldSetElement>(".theme-toggle");
     if (!fieldset) return;
 
-    const buttons =
-      fieldset.querySelectorAll<HTMLButtonElement>("button[data-theme]");
+    const radios = fieldset.querySelectorAll<HTMLInputElement>(
+      'input[name="theme"]',
+    );
 
-    function getStored(): string {
-      return localStorage.getItem("theme") ?? "system";
-    }
+    const stored = getStoredTheme();
+    radios.forEach((radio) => {
+      radio.checked = radio.value === stored;
+    });
+    applyTheme(stored, radios);
 
-    // Init
-    applyTheme(getStored());
-
-    // Click handlers
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        applyTheme(btn.dataset.theme!);
-      });
+    fieldset.addEventListener("change", (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.name !== "theme") return;
+      applyTheme(target.value as ThemeId, radios);
     });
 
-    // Listen for OS theme changes
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", () => {
-        if (getStored() === "system") applyTheme("system");
+        if (getStoredTheme() === "system") applyTheme("system", radios);
       });
   }
 

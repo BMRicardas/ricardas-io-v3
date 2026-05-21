@@ -18,13 +18,15 @@ import SectionLabel from "../ui/section-label.astro";
         <br />
         Let's talk.
       </p>
-      <div class="contact-link-list">
+      <ul class="contact-link-list">
         {
           CONTACT_LINKS.map((link) => (
-            <ContactLink {...link} variant="labeled" />
+            <li>
+              <ContactLink {...link} variant="labeled" />
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
     <ContactForm client:visible />
   </div>
@@ -36,12 +38,8 @@ import SectionLabel from "../ui/section-label.astro";
     container: contact / inline-size;
     padding: var(--space-lg) var(--space-md);
 
-    @media (min-width: 640px) {
-      padding: var(--space-xl) var(--space-lg);
-    }
-
     @media (min-width: 1024px) {
-      padding: var(--space-3xl) var(--space-2xl);
+      padding: var(--space-xl);
     }
   }
 
@@ -68,11 +66,13 @@ import SectionLabel from "../ui/section-label.astro";
     line-height: 1.6;
     color: var(--c-muted);
     margin-block-end: var(--space-lg);
+    text-wrap: pretty;
   }
 
   .contact-link-list {
     display: flex;
     align-items: center;
     gap: var(--space-lg);
+    list-style: none;
   }
 </style>

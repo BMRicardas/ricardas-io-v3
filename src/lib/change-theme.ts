@@ -1,22 +1,20 @@
-export function applyTheme(theme: string) {
+import { resolveTheme, THEME_STORAGE_KEY, type ThemeId } from "./theme";
+
+export function applyTheme(
+  theme: ThemeId,
+  radios?: NodeListOf<HTMLInputElement>,
+) {
   if (theme === "system") {
-    localStorage.removeItem("theme");
+    localStorage.removeItem(THEME_STORAGE_KEY);
   } else {
-    localStorage.setItem("theme", theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
   }
 
-  const resolved =
-    theme === "system"
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light"
-      : theme;
+  const resolved = resolveTheme(theme);
 
   document.documentElement.classList.toggle("dark", resolved === "dark");
 
-  document
-    .querySelectorAll<HTMLButtonElement>(".theme-toggle button[data-theme]")
-    .forEach((btn) => {
-      btn.setAttribute("aria-pressed", String(btn.dataset.theme === theme));
-    });
+  radios?.forEach((radio) => {
+    radio.checked = radio.value === theme;
+  });
 }
