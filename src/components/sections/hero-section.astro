@@ -59,7 +59,7 @@ const nameSegments = [
       }
     </ul>
     <span class="hero-location">
-      <Icon name="location" />
+      <Icon name="map-marker" size={30} />
       {config.location}
     </span>
   </div>
@@ -87,9 +87,9 @@ const nameSegments = [
   .hero-name {
     position: relative;
     font-size: clamp(2.5rem, 7vw, 4.5rem);
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
+    font-weight: var(--font-weight-black);
+    letter-spacing: var(--letter-spacing-tighter);
+    line-height: var(--line-height-tight);
     margin-block-end: var(--space-xs);
   }
 
@@ -110,7 +110,7 @@ const nameSegments = [
   .hero-bio {
     display: block;
     font-size: var(--text-base);
-    line-height: 1.6;
+    line-height: var(--line-height-relaxed);
     margin-top: var(--space-lg);
     max-width: 100%;
     color: var(--c-muted);
@@ -138,20 +138,17 @@ const nameSegments = [
 
   .hero-contact-link-list {
     display: flex;
-    gap: var(--space-xs);
+    gap: var(--space-3xs);
     list-style: none;
-
-    @media (min-width: 640px) {
-      gap: var(--space-md);
-    }
+    align-items: center;
   }
 
   .hero-location {
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 0.375rem;
-    font-size: 0.75rem;
+    gap: var(--space-xs);
+    font-size: var(--text-xs);
     color: var(--c-muted);
   }
 

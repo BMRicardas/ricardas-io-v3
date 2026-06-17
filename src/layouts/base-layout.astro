@@ -1,9 +1,12 @@
 ---
 import EasterEggs from "@/components/easter-eggs/easter-eggs.astro";
 import SeoHead from "@/components/ui/seo-head.astro";
+import ThemeToggle from "@/components/ui/theme-toggle.astro";
+import ShortcutHint from "@/components/easter-eggs/shortcut-hint/shortcut-hint.astro";
 import { config } from "@/config";
 import "../styles/global.css";
 import { Font } from "astro:assets";
+import { ToastContainer } from "@/components/islands";
 
 type Props = {
   title?: string;
@@ -49,7 +52,68 @@ const { title = config.seo.title } = Astro.props;
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <aside
+      class="theme-toggle-wrapper"
+      role="complementary"
+      aria-label="Color theme">
+      <ThemeToggle />
+    </aside>
+
+    <aside
+      class="shortcut-hint-wrapper"
+      role="complementary"
+      aria-label="Keyboard shortcuts">
+      <ShortcutHint />
+    </aside>
+
     <slot />
+    <ToastContainer client:only={true} />
     <EasterEggs />
+
+    <style>
+      .theme-toggle-wrapper {
+        position: fixed;
+        inset-block-start: var(--space-lg);
+        inset-inline-end: max(
+          var(--space-md),
+          calc((100dvw - 80rem) / 2 + var(--space-md))
+        );
+        z-index: 9000;
+      }
+
+      .shortcut-hint-wrapper {
+        position: fixed;
+        inset-block-end: var(--space-lg);
+        inset-inline-end: max(
+          var(--space-md),
+          calc((100dvw - 80rem) / 2 + var(--space-md))
+        );
+        z-index: 9500;
+
+        @media (max-width: 1024px) {
+          display: none;
+        }
+      }
+
+      .skip-link {
+        position: fixed;
+        top: -100%;
+        left: 50%;
+        z-index: 9999;
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        font-size: var(--text-base);
+        font-weight: 600;
+        background-color: var(--c-accent);
+        color: #fff;
+        text-decoration: none;
+        transition: top var(--transition-fast);
+
+        &:focus {
+          top: var(--space-md);
+        }
+      }
+    </style>
   </body>
 </html>

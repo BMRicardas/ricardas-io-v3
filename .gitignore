@@ -1,27 +1,38 @@
-# build output
+# Build output
 dist/
-# generated types
-.astro/
+.output/
+.vercel/
+.netlify/
 
-# dependencies
+# Generated types and caches
+.astro/
+.contentlayer/
+.cache/
+
+# Dependencies
 node_modules/
 
-# logs
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Environment variables
+# Ignores all .env files, but keeps .env.example if you have one
+.env*
+!.env.example
 
-# environment variables
-.env
-.env.production
-
-# macOS-specific files
+# OS specific files
 .DS_Store
+Thumbs.db
 
-# jetbrains setting folder
+# IDE/Editor specific
 .idea/
+.vscode/
 
-# .zip files
+# Project-specific scratch files
+project_dump.txt
+
+# Archives
 *.zip

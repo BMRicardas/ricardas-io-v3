@@ -7,14 +7,18 @@ import PartyMode from "./party/party-mode.astro";
 <PartyMode />
 
 <script>
-  import { getMode, setMode } from "./state";
+  import { mode } from "./state";
+
+  function isTypingTarget(e: KeyboardEvent): boolean {
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA") return true;
+    if ((e.target as HTMLElement).isContentEditable) return true;
+    return false;
+  }
 
   function initKeyboardShortcuts() {
     document.addEventListener("keydown", async (e) => {
-      // Ignore when typing in inputs
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA") return;
-
+      if (isTypingTarget(e)) return;
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
 
       if (e.key.toLowerCase() === "p") {
@@ -24,27 +28,37 @@ import PartyMode from "./party/party-mode.astro";
 
       if (e.key.toLowerCase() === "r") {
         const { stopPartyMode } = await import("./party/party");
-        if (getMode() === "party") {
+        if (mode.get() === "party") {
           stopPartyMode();
-          setMode("none");
+          mode.set("none");
         }
       }
     });
   }
 
   let loaded = false;
-  document.addEventListener(
-    "keydown",
-    async (e) => {
-      if (loaded) return;
-      if (["p", "r"].includes(e.key.toLowerCase())) {
-        loaded = true;
+  document.addEventListener("keydown", async (e) => {
+    if (loaded) return;
 
-        initKeyboardShortcuts();
-        // re-dispatch so this keystroke isn't lost
-        document.dispatchEvent(new KeyboardEvent("keydown", e));
-      }
-    },
-    { once: false },
-  );
+    // Check BEFORE deciding to init — so we don't bootstrap from an input keypress
+    if (isTypingTarget(e)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+
+    if (["p", "r"].includes(e.key.toLowerCase())) {
+      loaded = true;
+      initKeyboardShortcuts();
+      // Re-dispatch is safe now — target was already verified above
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: e.key,
+          code: e.code,
+          ctrlKey: e.ctrlKey,
+          metaKey: e.metaKey,
+          altKey: e.altKey,
+          shiftKey: e.shiftKey,
+          bubbles: true,
+        }),
+      );
+    }
+  });
 </script>

@@ -1,12 +1,13 @@
-import type { ComponentPropsWithRef } from "react";
+import type { ComponentProps } from "react";
 
 import styles from "./textarea.module.css";
 
-type Props = ComponentPropsWithRef<"textarea"> & {
+type Props = ComponentProps<"textarea"> & {
   id: string;
   length?: number;
   maxLength?: number;
 };
+
 export function Textarea({ id, ref, length = 0, maxLength, ...rest }: Props) {
   return (
     <div className={styles.wrapper}>
@@ -24,7 +25,8 @@ export function Textarea({ id, ref, length = 0, maxLength, ...rest }: Props) {
           data-near-limit={length >= maxLength * 0.9}
           data-at-limit={length >= maxLength}
           aria-live="polite"
-          aria-label={`${length} of ${maxLength} characters used`}>
+          aria-label={`${length} of ${maxLength} characters used`}
+        >
           {length}/{maxLength}
         </span>
       )}

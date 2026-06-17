@@ -1,5 +1,6 @@
 ---
 import type { ExperienceRole } from "../../types";
+import { formatDuration } from "@/lib/format-duration";
 
 type Props = {
   role: ExperienceRole;
@@ -7,6 +8,9 @@ type Props = {
 };
 
 const { role, showPeriod } = Astro.props;
+
+const period = `${role.start} — ${role.end}`;
+const duration = formatDuration(role.start, role.end);
 ---
 
 <div class="role">
@@ -14,8 +18,8 @@ const { role, showPeriod } = Astro.props;
   {
     showPeriod && (
       <div class="role-period">
-        <span>{role.period}</span>
-        <span>{role.duration}</span>
+        <span>{period}</span>
+        <span>{duration}</span>
       </div>
     )
   }
@@ -38,7 +42,7 @@ const { role, showPeriod } = Astro.props;
 
   .role-title {
     font-size: var(--text-base);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--c-text);
     transition: color var(--transition-fast);
   }
@@ -52,7 +56,7 @@ const { role, showPeriod } = Astro.props;
     }
 
     & > :not(:last-child) {
-      margin-block-end: 4px;
+      margin-block-end: var(--space-2xs);
     }
   }
 

@@ -37,6 +37,7 @@ const themes = [
           value={id}
           class="theme-radio sr-only"
           aria-label={label}
+          autocomplete="off"
         />
         <span class="theme-option-visual" aria-hidden="true">
           <svg
@@ -65,7 +66,7 @@ const themes = [
     border: 1px solid var(--c-border-subtle);
     border-radius: var(--radius-full);
     padding: var(--radius-sm);
-
+    box-shadow: --shadow-elevation();
     margin: 0;
     border-width: 1px;
   }
@@ -105,8 +106,7 @@ const themes = [
 </style>
 
 <script>
-  import { applyTheme } from "@/lib/change-theme";
-  import { getStoredTheme, type ThemeId } from "@/lib/theme";
+  import { applyTheme, getStoredTheme, type ThemeId } from "@/lib/theme";
 
   function initThemeToggle() {
     const fieldset =

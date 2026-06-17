@@ -1,30 +1,15 @@
-import type { ComponentProps } from "react";
-import styles from "./submit-button.module.css";
+import { Button } from "../button/button";
 
-type Props = ComponentProps<"button"> & {
-  isSubmitting: boolean;
-  disabled?: boolean;
-  label?: string;
+type Props = {
+  label: string;
   loadingLabel?: string;
+  isSubmitting: boolean;
 };
 
-export function SubmitButton({
-  isSubmitting,
-  disabled,
-  label = "Send message",
-  loadingLabel = "Sending…",
-  ...rest
-}: Props) {
-  const isDisabled = isSubmitting || disabled;
-
+export function SubmitButton({ label, loadingLabel, isSubmitting }: Props) {
   return (
-    <button
-      {...rest}
-      type="submit"
-      disabled={isDisabled}
-      className={styles.button}
-    >
-      {isSubmitting ? loadingLabel : label}
-    </button>
+    <Button type="submit" disabled={isSubmitting} fullWidth>
+      {isSubmitting && loadingLabel ? loadingLabel : label}
+    </Button>
   );
 }

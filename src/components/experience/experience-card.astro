@@ -1,25 +1,37 @@
 ---
 import type { Experience } from "../../types";
 import ExperienceRoleItem from "./experience-role-item.astro";
+import { formatDuration } from "@/lib/format-duration";
 
 type Props = {
   exp: Experience;
 };
 
 const { exp } = Astro.props;
+
+const newestRole = exp.roles[0];
+const oldestRole = exp.roles[exp.roles.length - 1];
+
+const isCurrent = newestRole.end === "Present";
+const period = `${oldestRole.start} — ${newestRole.end}`;
+const totalDuration = formatDuration(oldestRole.start, newestRole.end);
+const isGrouped = exp.roles.length > 1;
+const subtitle = isGrouped
+  ? `${totalDuration} · ${exp.roles.length} roles`
+  : totalDuration;
 ---
 
-<article class="experience-card" data-current={exp.isCurrent}>
+<article class="experience-card" data-current={isCurrent}>
   <div class="meta">
     <h3 class="company-name">{exp.company}</h3>
-    <p class="meta-date">{exp.period}</p>
-    <p class="meta-date">{exp.subtitle}</p>
+    <p class="meta-date">{period}</p>
+    <p class="meta-date">{subtitle}</p>
   </div>
   <ul class="role-list" role="list">
     {
       exp.roles.map((role) => (
         <li class="role-list-item">
-          <ExperienceRoleItem role={role} showPeriod={exp.isGrouped} />
+          <ExperienceRoleItem role={role} showPeriod={isGrouped} />
         </li>
       ))
     }
@@ -111,10 +123,10 @@ const { exp } = Astro.props;
 
   .company-name {
     font-size: var(--text-base);
-    font-weight: 700;
-    letter-spacing: -0.025em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
     color: var(--c-text);
-    line-height: 1.2;
+    line-height: var(--line-height-snug);
   }
 
   .experience-card[data-current="true"] .company-name {

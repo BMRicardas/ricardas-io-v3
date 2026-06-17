@@ -1,6 +1,6 @@
 // src/components/easter-eggs/party.ts
 
-import { getMode, setMode, isIdle } from "../state";
+import { mode, isIdle } from "../state";
 import { launchConfetti, clearConfetti } from "../confetti/confetti";
 
 const COOLDOWN = 600;
@@ -10,7 +10,7 @@ let lastBurst = 0;
 
 export function startPartyMode() {
   const root = document.documentElement;
-  setMode("party");
+  mode.set("party");
   root.classList.add("party-mode");
   lastBurst = Date.now();
   launchConfetti();
@@ -31,8 +31,8 @@ export function stopPartyMode() {
 }
 
 export function triggerParty() {
-  if (isIdle()) return startPartyMode();
-  if (getMode() !== "party") return;
+  if (isIdle.get()) return startPartyMode();
+  if (mode.get() !== "party") return;
   const now = Date.now();
   if (now - lastBurst > COOLDOWN) {
     lastBurst = now;

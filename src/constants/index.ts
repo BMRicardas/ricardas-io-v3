@@ -1,12 +1,13 @@
 import { config } from "@/config";
-import type { IconName } from "@/lib/icons";
+import Icon from "@/components/ui/icon.astro";
+import type { ComponentProps } from "astro/types";
 
 type ContactLink = {
   href: string;
   label: string;
   external: boolean;
   tooltips: string[];
-  icon: IconName;
+  icon: ComponentProps<typeof Icon>;
 };
 
 export const CONTACT_LINKS = [
@@ -20,7 +21,7 @@ export const CONTACT_LINKS = [
       "git push --force 🫣",
       "My second home",
     ],
-    icon: "github",
+    icon: { name: "github" },
   },
   {
     href: config.links.linkedin,
@@ -32,7 +33,7 @@ export const CONTACT_LINKS = [
       "Professional vibes only 💼",
       "Endorsements welcome 😏",
     ],
-    icon: "linkedin",
+    icon: { name: "linkedin" },
   },
   {
     href: `mailto:${config.links.email}`,
@@ -44,6 +45,6 @@ export const CONTACT_LINKS = [
       "I actually reply fast ⚡",
       "No spam pls 🙏",
     ],
-    icon: "mail",
+    icon: { name: "mail-outline" },
   },
 ] satisfies ContactLink[];

@@ -1,19 +1,15 @@
-import type { ReactNode } from "react";
+import { Activity, type ReactNode } from "react";
+import { clsx } from "clsx";
 import styles from "./field.module.css";
 
 type Props = {
-  invalid?: boolean;
   children: ReactNode;
   className?: string;
 };
 
-export function Field({ invalid = false, children, className }: Props) {
+export function Field({ children, className }: Props) {
   return (
-    <div
-      role="group"
-      data-slot="field"
-      data-invalid={invalid}
-      className={`${styles.field} ${className ?? ""}`.trim()}>
+    <div role="group" className={clsx(styles.field, className)}>
       {children}
     </div>
   );
@@ -33,10 +29,8 @@ export function FieldLabel({
   return (
     <label
       htmlFor={htmlFor}
-      data-slot="field-label"
-      className={
-        srOnly ? "sr-only" : `${styles.label} ${className ?? ""}`.trim()
-      }>
+      className={clsx(srOnly ? "sr-only" : styles.label, className)}
+    >
       {children}
     </label>
   );
@@ -48,18 +42,14 @@ export function FieldError({
   className,
 }: {
   id: string;
-  message: string | undefined;
+  message: string;
   className?: string;
 }) {
-  if (!message) return null;
-
   return (
-    <p
-      id={id}
-      role="alert"
-      data-slot="field-error"
-      className={`${styles.error} ${className ?? ""}`.trim()}>
-      {message}
-    </p>
+    <Activity mode={message ? "visible" : "hidden"}>
+      <p id={id} role="alert" className={clsx(styles.error, className)}>
+        {message}
+      </p>
+    </Activity>
   );
 }

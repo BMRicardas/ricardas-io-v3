@@ -1,20 +1,10 @@
+import { atom, computed } from "nanostores";
+
 export type Mode = "none" | "party";
 
-let mode: Mode = "none";
+export const mode = atom<Mode>("none");
 
-// const listeners = new Set<(mode: Mode) => void>();
-
-export function getMode(): Mode {
-  return mode;
-}
-
-export function setMode(next: Mode) {
-  mode = next;
-}
-
-export function isIdle(): boolean {
-  return mode === "none";
-}
+export const isIdle = computed(mode, ($mode) => $mode === "none");
 
 export const rand = (min: number, max: number) =>
   Math.random() * (max - min) + min;

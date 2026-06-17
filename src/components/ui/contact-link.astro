@@ -1,11 +1,11 @@
 ---
+import type { ComponentProps } from "astro/types";
 import Icon from "@/components/ui/icon.astro";
-import type { IconName } from "@/lib/icons";
 
 type Props = {
   href: string;
   label: string;
-  icon: IconName;
+  icon: ComponentProps<typeof Icon>;
   external: boolean;
   tooltips?: string[];
   variant?: "icon" | "labeled";
@@ -23,58 +23,60 @@ const {
 const isIcon = variant === "icon";
 const target = external ? "_blank" : undefined;
 const rel = external ? "noopener noreferrer" : undefined;
+const tooltipId = `tooltip-${label.toLowerCase()}`;
 ---
 
-<div
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  aria-label={label}
   class:list={[
-    "contact-link-wrapper",
-    { "contact-link-wrapper--icon": isIcon },
-  ]}>
-  <a
-    href={href}
-    target={target}
-    rel={rel}
-    aria-label={label}
-    class:list={[
-      "contact-link",
-      { "contact-link--icon": isIcon, "contact-link--labeled": !isIcon },
-    ]}
-    style={isIcon
-      ? `anchor-name: --social-link-${label.toLowerCase()}`
-      : undefined}>
-    <Icon name={icon} />
-    {!isIcon && <span>{label}</span>}
-  </a>
-  {
-    isIcon && tooltips.length > 0 && (
-      <span
-        class="contact-link-tooltip"
-        style={`position-anchor: --social-link-${label.toLowerCase()}`}
-        data-tooltips={JSON.stringify(tooltips)}
-      />
-    )
-  }
-</div>
+    "contact-link",
+    { "contact-link--icon": isIcon, "contact-link--labeled": !isIcon },
+  ]}
+  style={isIcon
+    ? `anchor-name: --social-link-${label.toLowerCase()}`
+    : undefined}
+  {...isIcon && tooltips.length > 0 ? { "aria-describedby": tooltipId } : {}}>
+  <Icon {...icon} />
+  {!isIcon && <span>{label}</span>}
+</a>
+
+{
+  isIcon && tooltips.length > 0 && (
+    <span
+      id={tooltipId}
+      role="tooltip"
+      class="contact-link-tooltip"
+      style={`position-anchor: --social-link-${label.toLowerCase()}`}
+      data-tooltips={JSON.stringify(tooltips)}
+    />
+  )
+}
 
 <style>
-  /* ── Shared wrapper ── */
-  .contact-link-wrapper {
+  .contact-link {
     position: relative;
-  }
-
-  /* ── Icon variant (hero footer) ── */
-  .contact-link--icon {
+    padding: var(--space-xs) var(--space-sm);
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    min-height: 40px;
-    border-radius: 50%;
-    color: var(--c-muted);
+    gap: var(--space-sm);
     text-decoration: none;
+    border-radius: var(--radius-md);
     transition:
       color var(--transition-fast),
       background-color var(--transition-fast);
+  }
+
+  /* ── Icon variant ── */
+  .contact-link--icon {
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: var(--radius-md);
+    color: var(--c-muted);
+    padding: var(--space-xs);
 
     &:hover {
       color: var(--c-accent);
@@ -86,20 +88,10 @@ const rel = external ? "noopener noreferrer" : undefined;
     }
   }
 
-  /* ── Labeled variant (contact section) ── */
+  /* ── Labeled variant ── */
   .contact-link--labeled {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: 0.25rem 0.5rem;
-    margin: -0.25rem -0.5rem;
     font-size: var(--text-base);
     color: var(--c-muted);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition:
-      color var(--transition-fast),
-      background-color var(--transition-fast);
 
     &:hover {
       color: var(--c-accent);
@@ -107,35 +99,35 @@ const rel = external ? "noopener noreferrer" : undefined;
     }
   }
 
-  /* ── Tooltip (icon variant only) ── */
+  /* ── Tooltip ── */
   .contact-link-tooltip {
     display: none;
     position: fixed;
     bottom: anchor(top);
-    margin-block-end: 8px;
+    margin-block-end: var(--space-xs);
     justify-self: anchor-center;
     position-try-fallbacks: --align-start, --align-end;
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
     color: var(--c-text);
     background: var(--c-surface);
     border: 1px solid var(--c-border-subtle);
     border-radius: var(--radius-md);
-    padding: 0.35rem 0.6rem;
+    padding: var(--space-2xs) var(--space-ms);
     white-space: nowrap;
     pointer-events: none;
     z-index: 10;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity var(--transition-fast);
 
     @media (min-width: 1024px) {
       display: inline-block;
     }
   }
 
-  /* ── Tooltip arrow (icon variant only) ── */
-  .contact-link-wrapper--icon .contact-link--icon::after {
+  /* ── Tooltip arrow ── */
+  .contact-link--icon::after {
     display: none;
     content: "";
     position: absolute;
@@ -146,14 +138,14 @@ const rel = external ? "noopener noreferrer" : undefined;
     border-top-color: var(--c-border-subtle);
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity var(--transition-fast);
 
     @media (min-width: 1024px) {
       display: inline-block;
     }
   }
 
-  .contact-link-wrapper--icon:hover .contact-link--icon::after {
+  .contact-link--icon:hover::after {
     opacity: 1;
   }
 
@@ -176,7 +168,7 @@ const rel = external ? "noopener noreferrer" : undefined;
   @supports not (anchor-name: --x) {
     .contact-link-tooltip {
       position: absolute;
-      bottom: calc(100% + 8px);
+      bottom: calc(100% + var(--space-xs));
       left: 50%;
       translate: -50% 0;
     }
@@ -196,14 +188,15 @@ const rel = external ? "noopener noreferrer" : undefined;
 
 <script>
   function initContactLinkTooltips() {
-    const wrappers = document.querySelectorAll<HTMLElement>(
-      ".contact-link-wrapper--icon",
+    const links = document.querySelectorAll<HTMLElement>(
+      ".contact-link--icon[aria-describedby]",
     );
 
-    wrappers.forEach((wrapper) => {
-      const tooltip = wrapper.querySelector<HTMLElement>(
-        ".contact-link-tooltip",
-      );
+    links.forEach((link) => {
+      const tooltipId = link.getAttribute("aria-describedby");
+      if (!tooltipId) return;
+
+      const tooltip = document.getElementById(tooltipId) as HTMLElement | null;
       if (!tooltip) return;
 
       const phrases: string[] = JSON.parse(tooltip.dataset.tooltips || "[]");
@@ -211,13 +204,13 @@ const rel = external ? "noopener noreferrer" : undefined;
 
       delete tooltip.dataset.tooltips;
 
-      wrapper.addEventListener("mouseenter", () => {
+      link.addEventListener("mouseenter", () => {
         tooltip.textContent =
           phrases[Math.floor(Math.random() * phrases.length)];
         tooltip.classList.add("contact-link-tooltip-visible");
       });
 
-      wrapper.addEventListener("mouseleave", () => {
+      link.addEventListener("mouseleave", () => {
         tooltip.classList.remove("contact-link-tooltip-visible");
       });
     });

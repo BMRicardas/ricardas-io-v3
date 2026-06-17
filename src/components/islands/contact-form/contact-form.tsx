@@ -1,15 +1,11 @@
-import { useId } from "react";
-import { useForm, useWatch, type FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import styles from "./contact-form.module.css";
-import { Field, FieldError, FieldLabel } from "../field";
-import { Input } from "../input";
-import { Textarea } from "../textarea";
+import { FormField } from "../field";
 import { SubmitButton } from "../submit-button";
-import { FormMessage } from "../form-message";
 import { ErrorBoundary } from "./error-boundary";
 import { PUBLIC_FORMSPREE_URL } from "astro:env/client";
+import { toast } from "@/stores/toast";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name should be at least 2 characters"),
@@ -18,53 +14,35 @@ const contactSchema = z.object({
   honeypot: z.string().optional(),
 });
 
-function ariaProps(
-  fieldName: keyof ContactFormData,
-  fieldId: string,
-  errors: FieldErrors<ContactFormData>,
-) {
-  const error = errors[fieldName];
-
-  return {
-    "aria-describedby": error ? `${fieldId}-err` : undefined,
-    "aria-invalid": !!error || undefined,
-  };
-}
-
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const MAX_MESSAGE_LENGTH = 400;
+const MAX_MESSAGE_LENGTH = 500;
 
 export function ContactForm() {
-  const nameId = useId();
-  const emailId = useId();
-  const messageId = useId();
-
   const {
     control,
     register,
     handleSubmit,
     reset,
-    setError,
-    clearErrors,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { isSubmitting },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-    mode: "onTouched",
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+      honeypot: undefined,
+    },
   });
-
-  const message = useWatch({ control, name: "message" });
 
   const onSubmit = async (data: ContactFormData) => {
     if (data.honeypot) {
-      reset();
+      toast.info("Not sure what happened here :/");
       return;
     }
 
-    clearErrors("root");
-
     try {
-      const response = await fetch(PUBLIC_FORMSPREE_URL, {
+      const response = await fetch(PUBLIC_FORMSPREE_URL + "asd", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,27 +56,25 @@ export function ContactForm() {
         }),
       });
 
-      if (!response.ok) throw new Error();
+      if (!response.ok) {
+        throw new Error("Something went wrong. Please try again.");
+      }
 
-      reset(undefined, { keepIsSubmitSuccessful: true });
-      setTimeout(() => reset(), 5000);
-    } catch {
-      setError("root", {
-        message: "Something went wrong — please try again.",
-      });
-      setTimeout(() => clearErrors("root"), 5000);
+      reset();
+      toast.success("Sent! I'll get back to you soon.");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.";
+
+      toast.error(errorMessage);
     }
   };
 
-  const messageLength = message?.length ?? 0;
-
   return (
     <ErrorBoundary>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        noValidate
-        className={styles.form}
-      >
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <input
           type="text"
           tabIndex={-1}
@@ -114,51 +90,34 @@ export function ContactForm() {
           }}
           {...register("honeypot")}
         />
-        <Field invalid={!!errors.name}>
-          <FieldLabel htmlFor={nameId}>Your name</FieldLabel>
-          <Input
-            id={nameId}
-            placeholder=" "
-            autoComplete="name"
-            {...ariaProps("name", nameId, errors)}
-            {...register("name")}
-          />
-          <FieldError id={`${nameId}-err`} message={errors.name?.message} />
-        </Field>
-        <Field invalid={!!errors.email}>
-          <FieldLabel htmlFor={emailId}>Your email</FieldLabel>
-          <Input
-            id={emailId}
-            type="email"
-            placeholder=" "
-            autoComplete="email"
-            {...ariaProps("email", emailId, errors)}
-            {...register("email")}
-          />
-          <FieldError id={`${emailId}-err`} message={errors.email?.message} />
-        </Field>
-        <Field invalid={!!errors.message}>
-          <FieldLabel htmlFor={messageId}>Your message</FieldLabel>
-          <Textarea
-            id={messageId}
-            placeholder=" "
-            length={messageLength}
-            maxLength={MAX_MESSAGE_LENGTH}
-            rows={3}
-            {...ariaProps("message", messageId, errors)}
-            {...register("message")}
-          />
-          <FieldError
-            id={`${messageId}-err`}
-            message={errors.message?.message}
-          />
-        </Field>
-        <SubmitButton isSubmitting={isSubmitting} />
-        <FormMessage visible={isSubmitSuccessful} variant="success" />
-        <FormMessage
-          visible={!!errors.root}
-          variant="error"
-          message={errors.root?.message}
+        <FormField
+          name="name"
+          label="Your name"
+          control={control}
+          disabled={isSubmitting}
+          autoComplete="name"
+        />
+        <FormField
+          name="email"
+          label="Your email"
+          control={control}
+          type="email"
+          disabled={isSubmitting}
+          autoComplete="email"
+        />
+        <FormField
+          name="message"
+          label="Your message"
+          control={control}
+          type="textarea"
+          disabled={isSubmitting}
+          maxLength={MAX_MESSAGE_LENGTH}
+          rows={3}
+        />
+        <SubmitButton
+          label="Send message"
+          loadingLabel="Sending…"
+          isSubmitting={isSubmitting}
         />
       </form>
     </ErrorBoundary>

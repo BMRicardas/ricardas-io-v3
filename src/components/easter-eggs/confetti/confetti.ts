@@ -28,12 +28,20 @@ type Piece = {
 
 const pieces: Piece[] = [];
 let running = false;
+let rafId = 0;
+
+// Cache canvas & ctx once — never look them up inside the animation loop
+let _canvas: HTMLCanvasElement | null = null;
+let _ctx: CanvasRenderingContext2D | null = null;
 
 function getCanvas() {
-  const el = document.getElementById(
-    "confetti-canvas",
-  ) as HTMLCanvasElement | null;
-  return { canvas: el, ctx: el?.getContext("2d") ?? null };
+  if (!_canvas) {
+    _canvas = document.getElementById(
+      "confetti-canvas",
+    ) as HTMLCanvasElement | null;
+    _ctx = _canvas?.getContext("2d") ?? null;
+  }
+  return { canvas: _canvas, ctx: _ctx };
 }
 
 export function launchConfetti() {
@@ -66,12 +74,13 @@ export function launchConfetti() {
 
   if (!running) {
     running = true;
-    draw();
+    rafId = requestAnimationFrame(draw);
   }
 }
 
 export function clearConfetti() {
   const { canvas, ctx } = getCanvas();
+  cancelAnimationFrame(rafId);
   pieces.length = 0;
   if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (canvas) canvas.style.display = "none";
@@ -85,12 +94,13 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let i = pieces.length - 1; i >= 0; i--) {
-    if (pieces[i].life <= 0) {
+    const p = pieces[i];
+
+    if (p.life <= 0) {
       pieces.splice(i, 1);
       continue;
     }
 
-    const p = pieces[i];
     p.x += p.vx;
     p.y += p.vy;
     p.vy += 0.4;
@@ -98,13 +108,21 @@ function draw() {
     p.rot += p.vr;
     p.life -= 0.006;
 
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rot);
+    // Manual transform instead of save/restore — much cheaper
+    const cos = Math.cos(p.rot);
+    const sin = Math.sin(p.rot);
+    const hw = p.w / 2;
+    const hh = p.h / 2;
+
     ctx.globalAlpha = Math.max(0, p.life);
     ctx.fillStyle = p.color;
-    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-    ctx.restore();
+    ctx.beginPath();
+    ctx.moveTo(p.x + cos * -hw - sin * -hh, p.y + sin * -hw + cos * -hh);
+    ctx.lineTo(p.x + cos * hw - sin * -hh, p.y + sin * hw + cos * -hh);
+    ctx.lineTo(p.x + cos * hw - sin * hh, p.y + sin * hw + cos * hh);
+    ctx.lineTo(p.x + cos * -hw - sin * hh, p.y + sin * -hw + cos * hh);
+    ctx.closePath();
+    ctx.fill();
   }
 
   if (pieces.length === 0) {
@@ -113,5 +131,5 @@ function draw() {
     return;
   }
 
-  requestAnimationFrame(draw);
+  rafId = requestAnimationFrame(draw);
 }

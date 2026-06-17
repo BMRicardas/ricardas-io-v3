@@ -1,78 +1,64 @@
 ---
-
+// @ts-nocheck
+import { Button } from "../../islands";
 ---
 
-<div class="shortcut-hint-anchor">
-  <button
-    class="shortcut-hint-trigger"
-    type="button"
-    aria-label="Keyboard shortcuts">
-    <span class="shortcut-hint-icon">?</span>
-  </button>
-  <div class="shortcut-hint-popover" role="tooltip">
-    <div class="shortcut-hint-row">
-      <kbd>P</kbd>
-      <span>Party mode</span>
-    </div>
-    <div class="shortcut-hint-row">
-      <kbd>R</kbd>
-      <span>Reset</span>
-    </div>
+<Button
+  id="hint-trigger"
+  className="shortcut-hint-trigger"
+  variant="ghost"
+  size="icon"
+  interestfor="hint-tooltip"
+  client:load>
+  ?
+</Button>
+<div
+  id="hint-tooltip"
+  class="shortcut-hint-popover"
+  popover="hint"
+  role="tooltip">
+  <div class="shortcut-hint-row">
+    <kbd>P</kbd>
+    <span>Party mode</span>
+  </div>
+  <div class="shortcut-hint-row">
+    <kbd>R</kbd>
+    <span>Reset</span>
   </div>
 </div>
 
-<style>
-  .shortcut-hint-anchor {
-    &:hover .shortcut-hint-trigger {
-      color: var(--c-text);
-      border-color: var(--c-border);
-    }
-
-    &:hover .shortcut-hint-popover {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-  }
-
+<style is:global>
   .shortcut-hint-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    anchor-name: --hint-trigger;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: var(--radius-full);
-    border: 1px solid var(--c-border-subtle);
-    background: var(--c-surface);
-    color: var(--c-muted);
-    font-size: 0.7rem;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: default;
-    transition:
-      color var(--transition-fast),
-      border-color var(--transition-fast);
+    font-weight: var(--font-weight-bold);
+    box-shadow: --shadow-elevation();
+    interest-delay: 0s 0.3s;
   }
+</style>
 
+<style>
   .shortcut-hint-popover {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    right: 0;
+    position-anchor: --hint-trigger;
+    position-area: top left;
     min-width: 160px;
-    padding: 0.5rem 0.65rem;
+    padding: var(--space-xs) var(--space-ms);
     background: var(--c-surface);
     border: 1px solid var(--c-border-subtle);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transform: translateY(4px);
-    pointer-events: none;
-    transition:
-      opacity 0.15s ease,
-      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity var(--transition-fast);
 
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
+    &:popover-open {
+      opacity: 1;
+    }
+
+    @starting-style {
+      &:popover-open {
+        opacity: 0;
+      }
     }
   }
 
@@ -81,8 +67,8 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    padding: 0.25rem 0;
-    font-size: 0.7rem;
+    padding: var(--space-2xs) 0;
+    font-size: var(--text-sm);
     color: var(--c-muted);
 
     &:not(:last-child) {
@@ -94,15 +80,15 @@
       align-items: center;
       justify-content: center;
       min-width: 22px;
-      padding: 0.1rem 0.3rem;
+      padding: var(--space-3xs) var(--space-2xs);
       border-radius: 3px;
       border: 1px solid var(--c-border);
       background: var(--c-bg);
       font-family: inherit;
-      font-size: 0.6rem;
-      font-weight: 600;
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--c-text);
-      line-height: 1;
+      line-height: var(--line-height-none);
     }
   }
 </style>

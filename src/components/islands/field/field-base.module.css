@@ -1,0 +1,39 @@
+.fieldBase {
+  width: 100%;
+  padding: var(--space-ml) var(--space-sm) var(--space-ms);
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--text-base);
+  outline: none;
+  border: none;
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-text);
+  transition:
+    background-color var(--transition-fast),
+    border-bottom-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:focus {
+    background-color: --transparent(var(--c-accent), 5%);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-bottom-color: var(--c-accent);
+    box-shadow: --shadow-focus(var(--c-accent));
+  }
+
+  &[aria-invalid="true"] {
+    border-bottom-color: var(--c-error);
+  }
+
+  &[aria-invalid="true"]:focus-visible {
+    box-shadow: 0 2px 1px 1px --transparent(var(--c-error), 50%);
+  }
+}

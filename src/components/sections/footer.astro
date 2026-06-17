@@ -2,13 +2,14 @@
 import { config } from "@/config";
 
 const year = new Date().getFullYear();
-const repoUrl = "https://github.com/BMRicardas/ricardas-io-v3";
+
+const { name, location, links } = config;
 ---
 
 <footer class="site-footer">
   <p class="footer-line">
     © {year}
-    {config.name.full} · Crafted in {config.location.split(",")[0]}
+    {name.full} · Crafted in {location.split(",")[0]}
   </p>
   <p class="footer-line footer-meta">
     Built with <a
@@ -17,7 +18,9 @@ const repoUrl = "https://github.com/BMRicardas/ricardas-io-v3";
       rel="noopener noreferrer">Astro</a
     >
     ·
-    <a href={repoUrl} target="_blank" rel="noopener noreferrer">View source</a>
+    <a href={links.repoUrl} target="_blank" rel="noopener noreferrer"
+      >View source</a
+    >
   </p>
 </footer>
 
@@ -37,9 +40,9 @@ const repoUrl = "https://github.com/BMRicardas/ricardas-io-v3";
 
   .footer-line {
     font-size: var(--text-xs);
-    letter-spacing: 0.05em;
+    letter-spacing: var(--letter-spacing-wider);
     color: var(--c-muted);
-    line-height: 1.6;
+    line-height: var(--line-height-relaxed);
   }
 
   .footer-meta a {
