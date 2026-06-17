@@ -42,7 +42,7 @@ export function ContactForm() {
     }
 
     try {
-      const response = await fetch(PUBLIC_FORMSPREE_URL + "asd", {
+      const response = await fetch(PUBLIC_FORMSPREE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
